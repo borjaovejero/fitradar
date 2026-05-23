@@ -1,0 +1,18 @@
+:host([theme~="fitradar-dark-dialog"]) [part="overlay"] {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 20px;
+  box-shadow:
+    0 28px 70px rgba(2, 8, 23, 0.58),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+:host([theme~="fitradar-dark-dialog"]) [part="content"] {
+  padding: 0;
+}
+
+:host([theme~="fitradar-dark-dialog"]) [part="backdrop"] {
+  background: rgba(2, 8, 23, 0.72);
+  backdrop-filter: blur(3px);
+}

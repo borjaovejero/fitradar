@@ -2,7 +2,7 @@
 set -e
 
 if [ -n "$USERS_DB_URL" ]; then
-  JDBC_URL=$(echo "$USERS_DB_URL" | sed 's|^postgres://|jdbc:postgresql://|')
+  JDBC_URL=$(echo "$USERS_DB_URL" | sed 's|^postgresql://|jdbc:postgresql://|' | sed 's|^postgres://|jdbc:postgresql://|')
   export SPRING_DATASOURCE_URL="$JDBC_URL"
 fi
 
