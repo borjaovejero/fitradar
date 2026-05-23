@@ -2,15 +2,12 @@ FROM eclipse-temurin:17-jdk AS build
 
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 RUN apk add --no-cache bash
 
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
 
-EXPOSE 8081
-ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["sh", "-c", "JDBC_URL=$(echo $USERS_DB_URL | sed 's|^postgresql://|jdbc:postgresql://|;s|^postgres://|jdbc:postgresql://|') && exec java -jar /app/app.jar --spring.datasource.url=$JDBC_URL"]
