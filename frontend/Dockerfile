@@ -13,4 +13,4 @@ RUN chmod +x mvnw && ./mvnw clean package -Pproduction -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 COPY --from=build /app/target/*.jar app.jar
 
-ENTRYPOINT ["java", "-Dvaadin.productionMode=true", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xmx256m", "-Dvaadin.productionMode=true", "-jar", "/app.jar"]
