@@ -36,7 +36,7 @@ services:
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     envVars:
-      - key: USERS_DB_URL
+      - key: SPRING_DATASOURCE_URL
         fromDatabase:
           name: webusers-postgres
           property: connectionString
@@ -49,6 +49,8 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: PORT
+        value: "10000"
       - fromGroup: secrets-prod
 
   - type: web
@@ -61,3 +63,5 @@ services:
     envVars:
       - key: BACKEND_BASE_URL
         sync: false
+      - key: PORT
+        value: "10000"
