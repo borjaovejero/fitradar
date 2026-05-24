@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -42,7 +43,7 @@ public class RegisterView extends HorizontalLayout {
         expand(leftPanel, rightPanel);
     }
 
-    // ── Panel izquierdo (marca + features) ───────────────────────────────────
+    // ── Panel izquierdo ───────────────────────────────────────────────────────
 
     private VerticalLayout buildLeftPanel() {
         VerticalLayout leftPanel = new VerticalLayout();
@@ -56,47 +57,65 @@ public class RegisterView extends HorizontalLayout {
                 .set("color", "white");
 
         VerticalLayout content = new VerticalLayout();
-        content.setWidth("520px");
+        content.setWidth("460px");
         content.setPadding(false);
-        content.setSpacing(true);
+        content.setSpacing(false);
         content.setAlignItems(FlexComponent.Alignment.CENTER);
+        content.getStyle().set("gap", "20px");
 
         HorizontalLayout brandRow = new HorizontalLayout();
         brandRow.setSpacing(true);
         brandRow.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        Div logoBox = new Div();
-        logoBox.setText("⚡");
-        logoBox.getStyle()
+        Image logoImg = new Image("images/fitradar_logo.png", "FitRadar logo");
+        logoImg.getStyle()
                 .set("width", "72px").set("height", "72px")
-                .set("border-radius", "20px").set("background", "#10b981")
-                .set("display", "flex").set("align-items", "center")
-                .set("justify-content", "center")
-                .set("font-size", "34px").set("color", "white");
+                .set("object-fit", "contain").set("border-radius", "20px")
+                .set("filter", "drop-shadow(0 0 12px rgba(16,185,129,0.45))");
 
         H1 brandTitle = new H1("FitRadar");
         brandTitle.getStyle()
                 .set("margin", "0").set("font-size", "3rem")
                 .set("font-weight", "800").set("color", "white");
 
-        brandRow.add(logoBox, brandTitle);
+        brandRow.add(logoImg, brandTitle);
 
-        Paragraph subtitle = new Paragraph("Únete a miles de atletas que ya optimizan su rendimiento con FitRadar.");
-        subtitle.getStyle()
-                .set("text-align", "center").set("font-size", "1.1rem")
-                .set("line-height", "1.6").set("color", "#e2e8f0")
-                .set("margin", "24px 0 18px 0");
+        Paragraph tagline = new Paragraph("Predict. Prevent. Perform.");
+        tagline.getStyle()
+                .set("margin", "0").set("font-size", "1.3rem")
+                .set("font-weight", "700").set("color", "#14e0a1")
+                .set("letter-spacing", "0.04em").set("text-align", "center");
 
-        content.add(
-                brandRow, subtitle,
-                buildFeatureCard("✅ Monitoreo de wellness en tiempo real"),
-                buildFeatureCard("🎯 Predicción de riesgo de lesión"),
-                buildFeatureCard("📊 Control detallado de actividades"),
-                buildFeatureCard("🩹 Seguimiento de lesiones y recuperación")
-        );
+        Paragraph welcome = new Paragraph(
+                "Crea tu cuenta y empieza a entrenar de forma mas inteligente. "
+                        + "Registra tus sesiones, monitoriza tu estado físico diario "
+                        + "y deja que el modelo ML trabaje por ti.");
+        welcome.getStyle()
+                .set("margin", "0").set("font-size", "1rem")
+                .set("line-height", "1.7").set("color", "#94a3b8")
+                .set("text-align", "center");
 
+        Div separator = new Div();
+        separator.getStyle()
+                .set("width", "60px").set("height", "3px")
+                .set("background", "linear-gradient(90deg,#14e0a1,#0ea5a4)")
+                .set("border-radius", "999px");
+
+        Paragraph step1 = buildStep("1", "Rellena tus datos básicos");
+        Paragraph step2 = buildStep("2", "Añade tu perfil deportivo (opcional)");
+        Paragraph step3 = buildStep("3", "Empieza a registrar entrenamientos");
+
+        content.add(brandRow, tagline, separator, welcome, step1, step2, step3);
         leftPanel.add(content);
         return leftPanel;
+    }
+
+    private Paragraph buildStep(String num, String text) {
+        Paragraph p = new Paragraph(num + ".  " + text);
+        p.getStyle()
+                .set("margin", "0").set("font-size", "0.95rem")
+                .set("color", "#cbd5e1").set("text-align", "center");
+        return p;
     }
 
     // ── Panel derecho (formulario) ────────────────────────────────────────────
@@ -119,27 +138,25 @@ public class RegisterView extends HorizontalLayout {
         formCard.setPadding(false);
         formCard.setSpacing(true);
         formCard.setAlignItems(FlexComponent.Alignment.STRETCH);
-        formCard.getStyle().set("padding", "40px 0");
-        formCard.getStyle().set("gap", "6px");
+        formCard.getStyle().set("padding", "40px 0").set("gap", "6px");
 
         H2 title = new H2("Crear cuenta");
         title.getStyle()
                 .set("margin", "0").set("font-size", "2.5rem")
                 .set("font-weight", "800").set("color", "white");
 
-        Paragraph subtitle = new Paragraph("Únete a la comunidad atlética de FitRadar");
+        Paragraph subtitle = new Paragraph("Completa tus datos para empezar");
         subtitle.getStyle()
                 .set("margin", "0 0 18px 0").set("font-size", "1.1rem").set("color", "#94a3b8");
 
         // ── Datos obligatorios ────────────────────────────────────────────────
-        // Orden: Nombre → Apellidos → Email → Fecha nacimiento → Username → Password
 
-        TextField firstNameField  = styledText("Nombre",           "Tu nombre");
-        TextField lastNameField   = styledText("Apellidos",         "Tus apellidos");
-        EmailField emailField     = styledEmail("Correo electrónico","tu@email.com");
-        DatePicker birthDateField = styledDate("Fecha de nacimiento");
-        TextField usernameField   = styledText("Nombre de usuario", "Tu usuario único");
-        PasswordField passwordField = styledPassword("Contraseña", "Mínimo 6 caracteres");
+        TextField firstNameField    = styledText("Nombre",             "Tu nombre");
+        TextField lastNameField     = styledText("Apellidos",           "Tus apellidos");
+        EmailField emailField       = styledEmail("Correo electrónico", "tu@email.com");
+        DatePicker birthDateField   = styledDate("Fecha de nacimiento");
+        TextField usernameField     = styledText("Nombre de usuario",   "Tu usuario unico");
+        PasswordField passwordField = styledPassword("Contraseña",      "Mínimo 6 caracteres");
         passwordField.setMinLength(6);
         passwordField.addValueChangeListener(e -> {
             if (!e.getValue().isEmpty() && e.getValue().length() < 6) {
@@ -159,7 +176,9 @@ public class RegisterView extends HorizontalLayout {
                 confirmPasswordField.setInvalid(false);
             }
         });
-        // ── Sección opcional ──────────────────────────────────────────────────
+
+        // ── Seccion opcional ──────────────────────────────────────────────────
+
         Paragraph optionalLabel = new Paragraph("Perfil deportivo (opcional)");
         optionalLabel.getStyle()
                 .set("margin", "20px 0 4px 0").set("font-size", "0.95rem")
@@ -172,7 +191,6 @@ public class RegisterView extends HorizontalLayout {
                 .set("border-top", "1px solid rgba(255,255,255,0.10)")
                 .set("margin", "0 0 12px 0");
 
-        // Sexo baja aquí
         Select<String> sexField = styledSelect("Sexo");
         sexField.setItems("MALE", "FEMALE", "OTHER");
         sexField.setItemLabelGenerator(v -> switch (v) {
@@ -196,13 +214,13 @@ public class RegisterView extends HorizontalLayout {
                 "BASKETBALL","TENNIS","PADEL","SWIMMING","OTHER");
         sportField.setItemLabelGenerator(v -> switch (v) {
             case "RUNNING"    -> "Atletismo / Running";
-            case "FOOTBALL"   -> "Fútbol";
+            case "FOOTBALL"   -> "Futbol";
             case "GYM"        -> "Gimnasio";
             case "CYCLING"    -> "Ciclismo";
             case "BASKETBALL" -> "Baloncesto";
             case "TENNIS"     -> "Tenis";
-            case "PADEL"      -> "Pádel";
-            case "SWIMMING"   -> "Natación";
+            case "PADEL"      -> "Padel";
+            case "SWIMMING"   -> "Natacion";
             default           -> "Otro";
         });
 
@@ -222,7 +240,8 @@ public class RegisterView extends HorizontalLayout {
         observationsField.getStyle().set("margin-top", "10px");
         applyInputStyle(observationsField.getElement());
 
-        // ── Botón ─────────────────────────────────────────────────────────────
+        // ── Boton ─────────────────────────────────────────────────────────────
+
         Button registerButton = new Button("Crear cuenta");
         registerButton.setWidthFull();
         registerButton.getStyle()
@@ -268,7 +287,6 @@ public class RegisterView extends HorizontalLayout {
                 request.setUsername(usernameField.getValue());
                 request.setPassword(passwordField.getValue());
 
-                // Opcionales
                 if (sexField.getValue() != null)              request.setSex(sexField.getValue());
                 if (heightField.getValue() != null)           request.setHeightCm(heightField.getValue());
                 if (weightField.getValue() != null)           request.setWeightKg(weightField.getValue());
@@ -278,7 +296,7 @@ public class RegisterView extends HorizontalLayout {
                 if (!observationsField.getValue().isBlank())  request.setObservations(observationsField.getValue());
 
                 UserResponse response = authService.register(request);
-                Notification.show("¡Cuenta creada! Bienvenido, " + response.getUsername(),
+                Notification.show("Cuenta creada. Bienvenido, " + response.getUsername(),
                         3000, Notification.Position.MIDDLE);
                 UI.getCurrent().navigate("");
 
@@ -387,21 +405,5 @@ public class RegisterView extends HorizontalLayout {
                 .set("--vaadin-input-field-placeholder-color", "#64748b")
                 .set("font-size", "1.05rem")
                 .set("margin-top", "2px");
-    }
-
-    private VerticalLayout buildFeatureCard(String text) {
-        VerticalLayout card = new VerticalLayout();
-        card.setWidth("480px");
-        card.setPadding(true);
-        card.setSpacing(false);
-        card.setAlignItems(FlexComponent.Alignment.START);
-        card.getStyle()
-                .set("background", "rgba(255,255,255,0.08)")
-                .set("border-radius", "18px")
-                .set("border", "1px solid rgba(255,255,255,0.08)");
-        Paragraph label = new Paragraph(text);
-        label.getStyle().set("margin", "0").set("font-size", "1.05rem").set("color", "#e2e8f0");
-        card.add(label);
-        return card;
     }
 }

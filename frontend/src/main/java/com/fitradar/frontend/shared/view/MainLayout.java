@@ -8,6 +8,7 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -44,18 +45,17 @@ public class MainLayout extends AppLayout {
                 .set("padding", "20px 18px")
                 .set("border-bottom", "1px solid rgba(255,255,255,0.08)");
 
-        Div logoBox = new Div();
-        logoBox.setText("⚡");
-        logoBox.getStyle()
-                .set("width", "44px").set("height", "44px").set("border-radius", "14px")
-                .set("background", "#10b981").set("display", "flex")
-                .set("align-items", "center").set("justify-content", "center")
-                .set("box-shadow", "0 0 18px rgba(16,185,129,0.35)");
+        Image logoImg = new Image("images/fitradar_logo.png", "FitRadar logo");
+        logoImg.getStyle()
+                .set("width", "44px").set("height", "44px")
+                .set("object-fit", "contain")
+                .set("border-radius", "14px")
+                .set("filter", "drop-shadow(0 0 8px rgba(16,185,129,0.35))");
 
         H2 brandTitle = new H2("FitRadar");
         brandTitle.getStyle().set("margin", "0").set("font-size", "2rem")
                 .set("font-weight", "800").set("color", "white");
-        brandRow.add(logoBox, brandTitle);
+        brandRow.add(logoImg, brandTitle);
 
         Paragraph sectionTitle = new Paragraph("MENU PRINCIPAL");
         sectionTitle.getStyle()

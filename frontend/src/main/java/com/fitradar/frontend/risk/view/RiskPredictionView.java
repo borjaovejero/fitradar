@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Route(value = "risk", layout = MainLayout.class)
-@PageTitle("Riesgo de lesión | FitRadar")
+@PageTitle("Riesgo de lesion | FitRadar")
 public class RiskPredictionView extends VerticalLayout {
 
     private final RiskPredictionService riskPredictionService;
@@ -94,7 +94,7 @@ public class RiskPredictionView extends VerticalLayout {
                 .set("font-weight", "800").set("color", "white");
 
         Paragraph subtitle = new Paragraph(
-                "Predicción generada automáticamente por el modelo ML tras cada entrenamiento");
+                "Prediccion generada automaticamente por el modelo ML tras cada entrenamiento");
         subtitle.getStyle()
                 .set("margin", "4px 0 0 0").set("font-size", "1rem").set("color", "#94a3b8");
 
@@ -102,7 +102,7 @@ public class RiskPredictionView extends VerticalLayout {
         textBlock.setPadding(false);
         textBlock.setSpacing(false);
 
-        Button refreshBtn = new Button("↻ Actualizar");
+        Button refreshBtn = new Button("Actualizar");
         refreshBtn.addClickListener(e -> refresh());
         refreshBtn.getStyle()
                 .set("height", "44px").set("padding", "0 20px").set("border-radius", "12px")
@@ -176,15 +176,16 @@ public class RiskPredictionView extends VerticalLayout {
         HorizontalLayout badgeRow = new HorizontalLayout();
         badgeRow.setSpacing(true);
 
-        Span modelBadge = new Span(
-                "personalized".equals(r.getModelUsed()) ? "⚡ Personalizado" : "🌐 Global");
+        boolean isPersonalized = "personalized".equals(r.getModelUsed());
+
+        Span modelBadge = new Span(isPersonalized ? "Personalizado" : "Global");
         modelBadge.getStyle()
                 .set("padding", "4px 10px").set("border-radius", "8px")
                 .set("font-size", "0.8rem").set("font-weight", "700")
-                .set("background", "personalized".equals(r.getModelUsed())
+                .set("background", isPersonalized
                         ? "rgba(96,165,250,0.15)" : "rgba(148,163,184,0.10)")
-                .set("color", "personalized".equals(r.getModelUsed()) ? "#60a5fa" : "#94a3b8")
-                .set("border", "1px solid " + ("personalized".equals(r.getModelUsed())
+                .set("color", isPersonalized ? "#60a5fa" : "#94a3b8")
+                .set("border", "1px solid " + (isPersonalized
                         ? "rgba(96,165,250,0.25)" : "rgba(148,163,184,0.15)"));
 
         Span versionBadge = new Span("v" + safe(r.getModelVersion()));
@@ -231,29 +232,28 @@ public class RiskPredictionView extends VerticalLayout {
         VerticalLayout card = card();
         card.getStyle().set("border", "1px solid rgba(250,204,21,0.15)");
 
-        H3 title = new H3("¿Cómo fue después de este entrenamiento?");
+        H3 title = new H3("Como fue despues de este entrenamiento?");
         title.getStyle()
                 .set("margin", "0 0 4px 0").set("font-size", "1.1rem")
                 .set("font-weight", "700").set("color", "white");
 
-        // Muestra la fecha del entrenamiento para que el usuario sepa a cuál se refiere
         String dateRef = r.getPredictionDate() != null
-                ? "Predicción del " + formatDateTime(r.getPredictionDate())
-                : "Última predicción";
+                ? "Prediccion del " + formatDateTime(r.getPredictionDate())
+                : "Ultima prediccion";
         Paragraph sub = new Paragraph(dateRef + ". Tu respuesta mejora el modelo y lo adapta a ti."
                 + (r.getSamplesCollected() != null
                 ? " " + r.getSamplesCollected() + " sesiones registradas." : ""));
         sub.getStyle()
                 .set("margin", "0 0 14px 0").set("font-size", "0.85rem").set("color", "#64748b");
 
-        Button okBtn = new Button("✅ Sin lesión ni molestia");
+        Button okBtn = new Button("Sin lesion ni molestia");
         okBtn.getStyle()
                 .set("flex", "1").set("height", "46px").set("border-radius", "12px")
                 .set("background", "rgba(20,224,161,0.10)").set("color", "#14e0a1")
                 .set("border", "1px solid rgba(20,224,161,0.25)").set("font-weight", "600")
                 .set("cursor", "pointer");
 
-        Button injuredBtn = new Button("🩹 Tuve molestia o lesión");
+        Button injuredBtn = new Button("Tuve molestia o lesion");
         injuredBtn.getStyle()
                 .set("flex", "1").set("height", "46px").set("border-radius", "12px")
                 .set("background", "rgba(251,113,133,0.10)").set("color", "#fb7185")
@@ -264,14 +264,12 @@ public class RiskPredictionView extends VerticalLayout {
         btnRow.setWidthFull();
         btnRow.setSpacing(true);
 
-        // Mensaje de confirmación tras dar feedback — oculto inicialmente
-        Paragraph doneMsg = new Paragraph("✅ Feedback enviado. ¡Gracias!");
+        Paragraph doneMsg = new Paragraph("Feedback enviado. Gracias!");
         doneMsg.getStyle()
                 .set("margin", "0").set("font-size", "0.95rem")
                 .set("font-weight", "700").set("color", "#14e0a1");
         doneMsg.setVisible(false);
 
-        // Al pulsar se ocultan los botones y aparece el mensaje
         okBtn.addClickListener(e -> {
             sendFeedback(r, 0);
             btnRow.setVisible(false);
@@ -291,7 +289,7 @@ public class RiskPredictionView extends VerticalLayout {
     private VerticalLayout buildContextCard() {
         VerticalLayout card = card();
 
-        H3 title = new H3("Datos usados en la última predicción");
+        H3 title = new H3("Datos usados en la ultima prediccion");
         title.getStyle()
                 .set("margin", "0 0 12px 0").set("font-size", "1.1rem")
                 .set("font-weight", "700").set("color", "white");
@@ -308,9 +306,9 @@ public class RiskPredictionView extends VerticalLayout {
                         .orElse(sessions.get(0));
 
                 String acwrStr = last.getAcwr() != null
-                        ? String.format(Locale.US, "%.2f", last.getAcwr()) : "—";
+                        ? String.format(Locale.US, "%.2f", last.getAcwr()) : "-";
 
-                card.add(contextRow("🏃 Último entrenamiento",
+                card.add(contextRow("Ultimo entrenamiento",
                         safe(last.getTitle()) + " · "
                                 + safeInt(last.getDurationMinutes()) + " min · RPE "
                                 + safeInt(last.getRpe()) + " · ACWR " + acwrStr));
@@ -322,11 +320,11 @@ public class RiskPredictionView extends VerticalLayout {
                     .filter(w -> w.getRecordDate() != null)
                     .max(Comparator.comparing(WellnessResponse::getRecordDate))
                     .ifPresent(w -> {
-                        String wText = "Ánimo " + safeInt(w.getGeneralFeeling())
-                                + " · Energía " + safeInt(w.getRecoveryFeeling())
-                                + " · Estrés " + safeInt(w.getStress())
-                                + " · Sueño " + safeInt(w.getSleepQuality());
-                        card.add(contextRow("💚 Último wellness", wText));
+                        String wText = "Animo " + safeInt(w.getGeneralFeeling())
+                                + " · Energia " + safeInt(w.getRecoveryFeeling())
+                                + " · Estres " + safeInt(w.getStress())
+                                + " · Sueno " + safeInt(w.getSleepQuality());
+                        card.add(contextRow("Ultimo wellness", wText));
                     });
         } catch (Exception ignored) {}
 
@@ -354,29 +352,26 @@ public class RiskPredictionView extends VerticalLayout {
         card.setAlignItems(Alignment.CENTER);
         card.getStyle().set("border", "1px solid rgba(255,255,255,0.06)");
 
-        Paragraph emoji = new Paragraph("🤖");
-        emoji.getStyle().set("margin", "8px 0").set("font-size", "3rem").set("text-align", "center");
-
-        H3 title = new H3("Aún no hay predicciones");
+        H3 title = new H3("Aun no hay predicciones");
         title.getStyle()
                 .set("margin", "0").set("font-size", "1.3rem")
                 .set("font-weight", "700").set("color", "white").set("text-align", "center");
 
         Paragraph msg = new Paragraph(
-                "El modelo ML genera una predicción automáticamente cada vez que registras "
-                        + "un entrenamiento. Registra tu primera sesión para ver tu riesgo.");
+                "El modelo ML genera una prediccion automaticamente cada vez que registras "
+                        + "un entrenamiento. Registra tu primera sesion para ver tu riesgo.");
         msg.getStyle()
                 .set("margin", "8px 0 16px 0").set("font-size", "1rem")
                 .set("color", "#64748b").set("text-align", "center").set("max-width", "400px");
 
-        Button goBtn = new Button("→ Ir a Actividades");
+        Button goBtn = new Button("Ir a Actividades");
         goBtn.addClickListener(e -> UI.getCurrent().navigate("training"));
         goBtn.getStyle()
                 .set("height", "46px").set("padding", "0 24px").set("border-radius", "12px")
                 .set("background", "#10b981").set("color", "white")
                 .set("font-weight", "700").set("border", "none").set("cursor", "pointer");
 
-        card.add(emoji, title, msg, goBtn);
+        card.add(title, msg, goBtn);
         return card;
     }
 
@@ -391,7 +386,7 @@ public class RiskPredictionView extends VerticalLayout {
         VerticalLayout card = card();
         card.getStyle().set("border", "1px solid rgba(96,165,250,0.12)");
 
-        H3 title = new H3("Personalización del modelo");
+        H3 title = new H3("Personalizacion del modelo");
         title.getStyle()
                 .set("margin", "0 0 8px 0").set("font-size", "1.1rem")
                 .set("font-weight", "700").set("color", "white");
@@ -402,8 +397,8 @@ public class RiskPredictionView extends VerticalLayout {
         boolean personalized = "personalized".equals(latest != null ? latest.getModelUsed() : "");
 
         Paragraph status = new Paragraph(personalized
-                ? "✅ Modelo personalizado activo"
-                : samples + " / 15 sesiones para activar personalización");
+                ? "Modelo personalizado activo"
+                : samples + " / 15 sesiones para activar personalizacion");
         status.getStyle()
                 .set("margin", "0 0 10px 0").set("font-size", "0.9rem")
                 .set("color", personalized ? "#14e0a1" : "#64748b");
@@ -438,7 +433,7 @@ public class RiskPredictionView extends VerticalLayout {
     private VerticalLayout buildWeekChart(List<RiskPredictionResponse> predictions) {
         VerticalLayout card = card();
 
-        H3 title = new H3("↗ Evolución esta semana");
+        H3 title = new H3("Evolucion esta semana");
         title.getStyle()
                 .set("margin", "0 0 12px 0").set("font-size", "1.1rem")
                 .set("font-weight", "700").set("color", "white");
@@ -502,7 +497,7 @@ public class RiskPredictionView extends VerticalLayout {
         card.add(title);
 
         if (predictions.isEmpty()) {
-            Paragraph empty = new Paragraph("Sin historial todavía");
+            Paragraph empty = new Paragraph("Sin historial todavia");
             empty.getStyle().set("color", "#475569").set("margin", "0");
             card.add(empty);
             return card;
@@ -511,6 +506,7 @@ public class RiskPredictionView extends VerticalLayout {
         predictions.subList(0, Math.min(predictions.size(), 6)).forEach(p -> {
             int sc = percent(p.getRiskScore());
             String color = riskColorByScore(sc);
+            boolean isPersonalized = "personalized".equals(p.getModelUsed());
 
             Div item = new Div();
             item.getStyle()
@@ -527,7 +523,7 @@ public class RiskPredictionView extends VerticalLayout {
                             + formatDateTime(p.getPredictionDate()) + "</div>" +
                             "<div style='font-size:0.75rem;color:#64748b;margin-top:2px'>"
                             + riskLabel(p.getRiskLevel()) + " · "
-                            + ("personalized".equals(p.getModelUsed()) ? "⚡ personalizado" : "global")
+                            + (isPersonalized ? "personalizado" : "global")
                             + "</div>"
             );
 
@@ -612,7 +608,7 @@ public class RiskPredictionView extends VerticalLayout {
     private String safe(String v)   { return v != null ? v : ""; }
 
     private String formatDateTime(LocalDateTime dt) {
-        if (dt == null) return "—";
+        if (dt == null) return "-";
         return dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 }

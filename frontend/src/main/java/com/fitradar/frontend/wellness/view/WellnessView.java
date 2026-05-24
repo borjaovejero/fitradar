@@ -130,11 +130,11 @@ public class WellnessView extends VerticalLayout {
             leftCol.add(buildLockedSummary(today.get()));
         } else {
             leftCol.add(
-                    buildMetricCard("💗", "Estado de ánimo",    "¿Cómo te sientes emocionalmente?", mood,           true),
-                    buildMetricCard("⚡", "Nivel de energía",    "¿Cuánta energía tienes?",          energy,         true),
-                    buildMetricCard("🌙", "Calidad del sueño",   "¿Cómo dormiste anoche?",            sleep,          true),
-                    buildMetricCard("🧠", "Nivel de estrés",     "¿Qué tan estresado estás?",         stress,         false),
-                    buildMetricCard("💪", "Agujetas musculares", "¿Cómo tienes los músculos?",        muscleSoreness, false),
+                    buildMetricCard("Estado de ánimo",    "¿Cómo te sientes emocionalmente?", mood,           true),
+                    buildMetricCard("Nivel de energía",   "¿Cuánta energía tienes?",           energy,         true),
+                    buildMetricCard("Calidad del sueño",  "¿Cómo dormiste anoche?",             sleep,          true),
+                    buildMetricCard("Nivel de estrés",    "¿Qué tan estresado estás?",          stress,         false),
+                    buildMetricCard("Agujetas musculares","¿Cómo tienes los músculos?",         muscleSoreness, false),
                     buildSleepHoursCard(),
                     buildWearableCard(),
                     buildSaveButton()
@@ -144,7 +144,7 @@ public class WellnessView extends VerticalLayout {
 
     // ── Tarjeta de métrica 1-5 ────────────────────────────────────────────────
 
-    private VerticalLayout buildMetricCard(String icon, String titleText,
+    private VerticalLayout buildMetricCard(String titleText,
                                            String subtitleText, int[] val, boolean positive) {
         VerticalLayout card = card();
         card.getStyle().set("padding", "12px 16px");
@@ -154,18 +154,6 @@ public class WellnessView extends VerticalLayout {
         top.setAlignItems(FlexComponent.Alignment.CENTER);
         top.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        HorizontalLayout iconTitle = new HorizontalLayout();
-        iconTitle.setAlignItems(FlexComponent.Alignment.CENTER);
-        iconTitle.setSpacing(true);
-
-        Div iconBox = new Div();
-        iconBox.setText(icon);
-        iconBox.getStyle()
-                .set("width", "36px").set("height", "36px").set("border-radius", "10px")
-                .set("background", "rgba(20,224,161,0.10)").set("display", "flex")
-                .set("align-items", "center").set("justify-content", "center")
-                .set("font-size", "16px").set("flex-shrink", "0");
-
         VerticalLayout texts = new VerticalLayout();
         texts.setPadding(false);
         texts.setSpacing(false);
@@ -174,13 +162,12 @@ public class WellnessView extends VerticalLayout {
         Paragraph s = new Paragraph(subtitleText);
         s.getStyle().set("margin", "0").set("font-size", "0.78rem").set("color", "#64748b");
         texts.add(t, s);
-        iconTitle.add(iconBox, texts);
 
         Div badge = new Div();
         badge.getStyle().set("text-align", "right").set("min-width", "80px");
         updateBadge(badge, val[0], positive);
 
-        top.add(iconTitle, badge);
+        top.add(texts, badge);
 
         // Selector 1-5
         Div selector = new Div();
@@ -249,27 +236,14 @@ public class WellnessView extends VerticalLayout {
         row.setAlignItems(FlexComponent.Alignment.CENTER);
         row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        HorizontalLayout left = new HorizontalLayout();
-        left.setAlignItems(FlexComponent.Alignment.CENTER);
-        left.setSpacing(true);
-
-        Div iconBox = new Div();
-        iconBox.setText("😴");
-        iconBox.getStyle()
-                .set("width", "36px").set("height", "36px").set("border-radius", "10px")
-                .set("background", "rgba(20,224,161,0.10)").set("display", "flex")
-                .set("align-items", "center").set("justify-content", "center")
-                .set("font-size", "16px").set("flex-shrink", "0");
-
         VerticalLayout texts = new VerticalLayout();
         texts.setPadding(false);
         texts.setSpacing(false);
         Paragraph t = new Paragraph("Horas de sueño");
         t.getStyle().set("margin", "0").set("font-size", "0.95rem").set("font-weight", "700").set("color", "white");
-        Paragraph s = new Paragraph("¿Cuántas horas dormiste? (óptimo: 8h)");
+        Paragraph s = new Paragraph("¿Cuántas horas dormiste? (optimo: 8h)");
         s.getStyle().set("margin", "0").set("font-size", "0.78rem").set("color", "#64748b");
         texts.add(t, s);
-        left.add(iconBox, texts);
 
         NumberField field = new NumberField();
         field.setMin(0); field.setMax(12); field.setStep(0.5);
@@ -279,7 +253,7 @@ public class WellnessView extends VerticalLayout {
         applyNumberStyle(field);
         field.addValueChangeListener(e -> { if (e.getValue() != null) sleepHoursVal[0] = e.getValue(); });
 
-        row.add(left, field);
+        row.add(texts, field);
         card.add(row);
         return card;
     }
@@ -292,12 +266,12 @@ public class WellnessView extends VerticalLayout {
                 .set("padding", "12px 16px")
                 .set("border", "1px solid rgba(96,165,250,0.15)");
 
-        Paragraph title = new Paragraph("⌚ Datos del wearable (opcional)");
+        Paragraph title = new Paragraph("Datos del wearable (opcional)");
         title.getStyle().set("margin", "0 0 4px 0").set("font-size", "0.85rem")
                 .set("font-weight", "700").set("color", "#60a5fa");
 
         Paragraph hint = new Paragraph(
-                "HRV y FC en reposo mejoran la precisión del modelo ML. " +
+                "HRV y FC en reposo mejoran la precision del modelo ML. " +
                         "Déjalos en blanco si no tienes dispositivo.");
         hint.getStyle().set("margin", "0 0 10px 0").set("font-size", "0.75rem").set("color", "#475569");
 
@@ -342,20 +316,18 @@ public class WellnessView extends VerticalLayout {
         btn.addClickListener(e -> {
             try {
                 WellnessRequest req = new WellnessRequest();
-                // Valores subjetivos (sliders)
                 req.setGeneralFeeling(mood[0]);
                 req.setRecoveryFeeling(energy[0]);
                 req.setSleepQuality(sleep[0]);
                 req.setStress(stress[0]);
                 req.setMuscleSoreness(muscleSoreness[0]);
-                req.setFatigue(6 - energy[0]);   // derivado de energía
+                req.setFatigue(6 - energy[0]);
                 req.setSleepHours(sleepHoursVal[0]);
-                // Valores del wearable (opcionales)
                 if (hrvVal[0] > 0)       req.setHrvRmssd(hrvVal[0]);
                 if (restingHrVal[0] > 0) req.setRestingHr(restingHrVal[0]);
 
                 wellnessService.createRecord(username, password, req);
-                Notification.show("✓ Wellness guardado", 2500, Notification.Position.MIDDLE);
+                Notification.show("Wellness guardado", 2500, Notification.Position.MIDDLE);
                 refresh();
             } catch (Exception ex) {
                 String msg = ex.getMessage();
@@ -377,32 +349,40 @@ public class WellnessView extends VerticalLayout {
                 .set("border", "1px solid rgba(20,224,161,0.20)")
                 .set("padding", "16px");
 
-        Paragraph tag = new Paragraph("✅ Wellness registrado hoy");
+        Paragraph tag = new Paragraph("Wellness registrado hoy");
         tag.getStyle().set("margin", "0 0 12px 0").set("font-size", "0.9rem")
                 .set("color", "#14e0a1").set("font-weight", "600");
 
-        HorizontalLayout row1 = summaryRow("💗", "Ánimo",    r.getGeneralFeeling(),  true,
-                "⚡", "Energía", r.getRecoveryFeeling(), true);
-        HorizontalLayout row2 = summaryRow("🌙", "Sueño",    r.getSleepQuality(),    true,
-                "🧠", "Estrés",  r.getStress(),          false);
-        HorizontalLayout row3 = summaryRow("💪", "Agujetas", r.getMuscleSoreness(),  false,
-                "😴", "Horas",   null,                   true);
+        HorizontalLayout row1 = summaryRow("Ánimo",    r.getGeneralFeeling(),  true,
+                "Energía", r.getRecoveryFeeling(), true);
+        HorizontalLayout row2 = summaryRow("Sueño",    r.getSleepQuality(),    true,
+                "Estrés",  r.getStress(),          false);
+        HorizontalLayout row3 = new HorizontalLayout();
+        row3.setWidthFull();
+        row3.setSpacing(true);
 
-        // Horas como metric especial
-        Div hoursBox = summaryMetric("😴", "Horas sueño", null, true);
+        Div hoursBox = new Div();
+        hoursBox.getStyle()
+                .set("flex", "1").set("padding", "10px 12px").set("border-radius", "12px")
+                .set("background", "rgba(255,255,255,0.04)")
+                .set("border", "1px solid rgba(255,255,255,0.06)");
         if (r.getSleepHours() != null) {
             hoursBox.getElement().setProperty("innerHTML",
-                    "<div style='font-size:1.1rem;margin-bottom:4px'>😴</div>" +
-                            "<div style='font-size:0.75rem;color:#64748b;margin-bottom:3px'>Horas sueño</div>" +
+                    "<div style='font-size:0.75rem;color:#64748b;margin-bottom:3px'>Horas sueno</div>" +
                             "<div style='font-size:1.3rem;font-weight:900;color:#14e0a1;line-height:1'>" +
                             String.format(Locale.US, "%.1f", r.getSleepHours()) + "h</div>"
             );
+        } else {
+            hoursBox.getElement().setProperty("innerHTML",
+                    "<div style='font-size:0.75rem;color:#64748b;margin-bottom:3px'>Horas sueno</div>" +
+                            "<div style='font-size:1.3rem;font-weight:900;color:#64748b;line-height:1'>-</div>"
+            );
         }
+        row3.add(summaryMetric("Agujetas", r.getMuscleSoreness(), false), hoursBox);
 
-        // Wearable si tiene datos
         if (r.getHrvRmssd() != null || r.getRestingHr() != null) {
             Paragraph wearable = new Paragraph(
-                    "⌚ " +
+                    "Wearable: " +
                             (r.getHrvRmssd()  != null ? "HRV " + r.getHrvRmssd() + " ms  " : "") +
                             (r.getRestingHr() != null ? "FC reposo " + r.getRestingHr() + " bpm" : "")
             );
@@ -414,16 +394,16 @@ public class WellnessView extends VerticalLayout {
         return card;
     }
 
-    private HorizontalLayout summaryRow(String i1, String t1, Integer v1, boolean p1,
-                                        String i2, String t2, Integer v2, boolean p2) {
+    private HorizontalLayout summaryRow(String t1, Integer v1, boolean p1,
+                                        String t2, Integer v2, boolean p2) {
         HorizontalLayout row = new HorizontalLayout();
         row.setWidthFull();
         row.setSpacing(true);
-        row.add(summaryMetric(i1, t1, v1, p1), summaryMetric(i2, t2, v2, p2));
+        row.add(summaryMetric(t1, v1, p1), summaryMetric(t2, v2, p2));
         return row;
     }
 
-    private Div summaryMetric(String icon, String title, Integer val, boolean positive) {
+    private Div summaryMetric(String title, Integer val, boolean positive) {
         int v = val != null ? val : 3;
         String color = positive
                 ? (v >= 4 ? "#14e0a1" : v == 3 ? "#facc15" : "#fb7185")
@@ -437,8 +417,7 @@ public class WellnessView extends VerticalLayout {
                 .set("background", "rgba(255,255,255,0.04)")
                 .set("border", "1px solid rgba(255,255,255,0.06)");
         box.getElement().setProperty("innerHTML",
-                "<div style='font-size:1.1rem;margin-bottom:4px'>" + icon + "</div>" +
-                        "<div style='font-size:0.75rem;color:#64748b;margin-bottom:3px'>" + title + "</div>" +
+                "<div style='font-size:0.75rem;color:#64748b;margin-bottom:3px'>" + title + "</div>" +
                         "<div style='font-size:1.3rem;font-weight:900;color:" + color + ";line-height:1'>" + v + "/5</div>" +
                         "<div style='font-size:0.78rem;font-weight:600;color:" + color + ";margin-top:2px'>" + lbl + "</div>"
         );
@@ -490,7 +469,7 @@ public class WellnessView extends VerticalLayout {
         VerticalLayout card = card();
         card.getStyle().set("padding", "12px 16px");
 
-        H3 title = new H3("Visión general");
+        H3 title = new H3("Vision general");
         title.getStyle().set("margin", "0 0 6px 0").set("font-size", "1rem")
                 .set("font-weight", "700").set("color", "white");
 
@@ -514,7 +493,7 @@ public class WellnessView extends VerticalLayout {
         VerticalLayout card = card();
         card.getStyle().set("padding", "12px 16px");
 
-        H3 title = new H3("↗ Esta semana");
+        H3 title = new H3("Esta semana");
         title.getStyle().set("margin", "0 0 8px 0").set("font-size", "1rem")
                 .set("font-weight", "700").set("color", "white");
 
@@ -591,8 +570,8 @@ public class WellnessView extends VerticalLayout {
                     "<div>" +
                             "<div style='font-size:0.85rem;font-weight:600;color:white'>" + formatDate(r.getRecordDate()) + "</div>" +
                             "<div style='font-size:0.75rem;color:#64748b;margin-top:2px'>" +
-                            "Ánimo " + safe(r.getGeneralFeeling()) + " · Energía " + safe(r.getRecoveryFeeling()) +
-                            " · Sueño " + safe(r.getSleepQuality()) + " · Estrés " + safe(r.getStress()) +
+                            "Animo " + safe(r.getGeneralFeeling()) + " · Energia " + safe(r.getRecoveryFeeling()) +
+                            " · Sueno " + safe(r.getSleepQuality()) + " · Estres " + safe(r.getStress()) +
                             (r.getSleepHours() != null ? " · " + String.format(Locale.US,"%.1f",r.getSleepHours()) + "h" : "") +
                             "</div></div>" +
                             "<div style='font-size:1.1rem;font-weight:900;color:" + scoreColor(score) + "'>" +
@@ -698,13 +677,13 @@ public class WellnessView extends VerticalLayout {
     }
 
     private String describeScore(double s) {
-        if (s >= 85) return "¡Excelente estado!"; if (s >= 70) return "Buen estado";
+        if (s >= 85) return "Excelente estado"; if (s >= 70) return "Buen estado";
         if (s >= 55) return "Estado intermedio";  if (s >= 40) return "Conviene recuperar";
         return "Día delicado";
     }
 
     private String formatDate(LocalDate d) {
-        if (d == null) return "—";
+        if (d == null) return "-";
         return d.format(DateTimeFormatter.ofPattern("EEE d MMM", new Locale("es", "ES")));
     }
 

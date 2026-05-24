@@ -41,7 +41,7 @@ public class User {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sex", nullable = false, length = 20)
+    @Column(name = "sex", nullable = true, length = 20)
     private Sex sex;
 
     // ── Perfil deportivo (opcionales, editables desde perfil) ─

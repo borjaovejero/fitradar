@@ -32,7 +32,7 @@ public class RegisterRequest {
     @Past(message = "La fecha de nacimiento debe ser anterior a hoy")
     private LocalDate birthDate;
 
-    @NotNull(message = "El sexo es obligatorio")
+    // Opcional
     private User.Sex sex;
 
     // Opcionales (perfil deportivo)

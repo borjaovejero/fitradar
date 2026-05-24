@@ -115,9 +115,9 @@ public class InjuryRecordView extends VerticalLayout {
         long reported  = records.stream().filter(InjuryRecordResponse::isReportedToModel).count();
 
         statsRow.add(
-                buildStatCard(String.valueOf(active),    "Activas",           "#fb7185", "rgba(251,113,133,0.10)"),
-                buildStatCard(String.valueOf(recovered), "Recuperadas",       "#14e0a1", "rgba(20,224,161,0.10)"),
-                buildStatCard(String.valueOf(reported),  "Enviadas al modelo","#60a5fa", "rgba(96,165,250,0.10)")
+                buildStatCard(String.valueOf(active),    "Activas",            "#fb7185", "rgba(251,113,133,0.10)"),
+                buildStatCard(String.valueOf(recovered), "Recuperadas",        "#14e0a1", "rgba(20,224,161,0.10)"),
+                buildStatCard(String.valueOf(reported),  "Enviadas al modelo", "#60a5fa", "rgba(96,165,250,0.10)")
         );
     }
 
@@ -176,7 +176,7 @@ public class InjuryRecordView extends VerticalLayout {
 
             if (records.isEmpty()) {
                 Div empty = new Div();
-                empty.setText("No tienes lesiones registradas. ¡Sigue así! 💪");
+                empty.setText("No tienes lesiones registradas. Sigue así!");
                 empty.getStyle()
                         .set("padding", "40px").set("color", "#64748b")
                         .set("font-size", "1rem").set("text-align", "center");
@@ -192,29 +192,28 @@ public class InjuryRecordView extends VerticalLayout {
     }
 
     private HorizontalLayout buildRow(InjuryRecordResponse record) {
-        // Icono con emoji según zona
-        Div iconBox = new Div();
-        iconBox.setText(bodyZoneIcon(record.getBodyZone()));
-        iconBox.getStyle()
+        Div zoneTag = new Div();
+        zoneTag.setText(bodyZoneLabel(record.getBodyZone()));
+        zoneTag.getStyle()
                 .set("width", "50px").set("height", "50px").set("border-radius", "14px")
                 .set("background", record.isFullyRecovered()
                         ? "rgba(20,224,161,0.10)" : "rgba(251,113,133,0.10)")
                 .set("display", "flex").set("align-items", "center")
-                .set("justify-content", "center").set("font-size", "22px")
-                .set("flex-shrink", "0");
+                .set("justify-content", "center").set("font-size", "0.6rem")
+                .set("font-weight", "700").set("color", record.isFullyRecovered()
+                        ? "#14e0a1" : "#fb7185")
+                .set("flex-shrink", "0").set("text-align", "center").set("padding", "4px");
 
-        // Título
         H3 title = new H3(bodyZoneLabel(record.getBodyZone())
-                + " — " + injuryTypeLabel(record.getInjuryType()));
+                + " - " + injuryTypeLabel(record.getInjuryType()));
         title.getStyle()
                 .set("margin", "0").set("font-size", "1rem")
                 .set("font-weight", "700").set("color", "white");
 
-        // Detalles: fecha + días de baja si hay
         String detailStr = "Desde " + formatDate(record.getStartDate())
                 + " · " + severityLabel(record.getInjurySeverity());
         if (record.getDaysOff() != null && record.getDaysOff() > 0) {
-            detailStr += " · " + record.getDaysOff() + " días de baja";
+            detailStr += " · " + record.getDaysOff() + " dias de baja";
         }
         if (record.isRecurrence()) {
             detailStr += " · Recaída";
@@ -228,7 +227,6 @@ public class InjuryRecordView extends VerticalLayout {
         info.setPadding(false);
         info.setSpacing(false);
 
-        // Badge de estado
         Span badge = new Span(statusLabel(record));
         badge.getStyle()
                 .set("padding", "5px 12px").set("border-radius", "10px")
@@ -238,9 +236,8 @@ public class InjuryRecordView extends VerticalLayout {
                 .set("border", "1px solid " + statusBorder(record))
                 .set("white-space", "nowrap");
 
-        // Badge modelo ML
         if (record.isReportedToModel()) {
-            Span mlBadge = new Span("⚡ ML");
+            Span mlBadge = new Span("ML");
             mlBadge.getStyle()
                     .set("padding", "5px 10px").set("border-radius", "10px")
                     .set("font-size", "0.8rem").set("font-weight", "700")
@@ -250,7 +247,6 @@ public class InjuryRecordView extends VerticalLayout {
                     .set("white-space", "nowrap");
         }
 
-        // Botón editar
         Button editBtn = new Button(VaadinIcon.EDIT.create());
         editBtn.addClickListener(e -> openDialog(record));
         editBtn.getStyle()
@@ -259,7 +255,6 @@ public class InjuryRecordView extends VerticalLayout {
                 .set("background", "rgba(96,165,250,0.10)").set("color", "#60a5fa")
                 .set("border", "1px solid rgba(96,165,250,0.25)").set("cursor", "pointer");
 
-        // Botón borrar
         Button deleteBtn = new Button(VaadinIcon.TRASH.create());
         deleteBtn.addClickListener(e -> confirmDelete(record));
         deleteBtn.getStyle()
@@ -272,7 +267,7 @@ public class InjuryRecordView extends VerticalLayout {
         actions.setAlignItems(Alignment.CENTER);
         actions.setSpacing(true);
 
-        HorizontalLayout row = new HorizontalLayout(iconBox, info, actions);
+        HorizontalLayout row = new HorizontalLayout(zoneTag, info, actions);
         row.setWidthFull();
         row.setPadding(true);
         row.setAlignItems(Alignment.CENTER);
@@ -283,7 +278,7 @@ public class InjuryRecordView extends VerticalLayout {
         return row;
     }
 
-    // ── Diálogo crear/editar ──────────────────────────────────────────────────
+    // ── Dialogo crear/editar ──────────────────────────────────────────────────
 
     private void openDialog(InjuryRecordResponse existing) {
         boolean editing = existing != null;
@@ -330,8 +325,8 @@ public class InjuryRecordView extends VerticalLayout {
         recoveredChk.setValue(editing && existing.isFullyRecovered());
         recoveredChk.getStyle().set("color", "#cbd5e1");
 
-        TextArea descField = new TextArea("Descripción");
-        descField.setPlaceholder("¿Cómo ocurrió? ¿Qué síntomas tienes?");
+        TextArea descField = new TextArea("Descripcion");
+        descField.setPlaceholder("Como ocurrio? Que sintomas tienes?");
         descField.setWidthFull();
         descField.setMinHeight("100px");
         styleInput(descField);
@@ -363,10 +358,10 @@ public class InjuryRecordView extends VerticalLayout {
 
                 if (editing) {
                     injuryRecordService.updateRecord(username, password, existing.getId(), req);
-                    Notification.show("Lesión actualizada ✓", 3000, Notification.Position.MIDDLE);
+                    Notification.show("Lesión actualizada", 3000, Notification.Position.MIDDLE);
                 } else {
                     injuryRecordService.createRecord(username, password, req);
-                    Notification.show("Lesión registrada ✓", 3000, Notification.Position.MIDDLE);
+                    Notification.show("Lesión registrada", 3000, Notification.Position.MIDDLE);
                 }
 
                 dialog.close();
@@ -522,29 +517,17 @@ public class InjuryRecordView extends VerticalLayout {
         };
     }
 
-    private String bodyZoneIcon(String v) {
-        return switch (safe(v)) {
-            case "KNEE", "ANKLE", "FOOT", "CALF",
-                 "QUADRICEPS", "HAMSTRING" -> "🦵";
-            case "SHOULDER", "ARM", "ELBOW", "WRIST" -> "💪";
-            case "BACK", "LUMBAR" -> "🔙";
-            case "HIP", "GLUTE"  -> "🦴";
-            case "NECK"          -> "🫀";
-            default              -> "🩹";
-        };
-    }
-
     private String severityLabel(String v) {
         return switch (safe(v)) {
             case "LOW"    -> "Leve";
             case "MEDIUM" -> "Moderada";
             case "HIGH"   -> "Grave";
-            default       -> "—";
+            default       -> "-";
         };
     }
 
     private String formatDate(LocalDate d) {
-        if (d == null) return "—";
+        if (d == null) return "-";
         return d.format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES")));
     }
 

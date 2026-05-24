@@ -74,13 +74,13 @@ public class TrainingSessionView extends VerticalLayout {
             return;
         }
 
-        setSizeFull();
+        setWidthFull();
         setPadding(false);
         setSpacing(false);
         setAlignItems(Alignment.STRETCH);
         getStyle()
                 .set("background", "#020817").set("padding", "32px 40px")
-                .set("box-sizing", "border-box").set("overflow-y", "auto");
+                .set("box-sizing", "border-box");
 
         add(buildHeader(), statsRow, chartCard, buildListCard());
         refreshSessions();
@@ -125,33 +125,27 @@ public class TrainingSessionView extends VerticalLayout {
         int totalCalories = allSessions.stream().mapToInt(s -> safeInt(s.getCalories())).sum();
 
         statsRow.add(
-                buildStatCard("🏃", String.valueOf(totalSessions), "Sesiones totales",  "#14e0a1", "rgba(20,224,161,0.10)"),
-                buildStatCard("⏱️", formatDuration(totalMinutes),  "Tiempo total",      "#60a5fa", "rgba(37,99,235,0.12)"),
-                buildStatCard("🔥", String.valueOf(totalCalories), "Calorías quemadas", "#fb923c", "rgba(234,88,12,0.12)")
+                buildStatCard(String.valueOf(totalSessions), "Sesiones totales",  "#14e0a1", "rgba(20,224,161,0.10)"),
+                buildStatCard(formatDuration(totalMinutes),  "Tiempo total",      "#60a5fa", "rgba(37,99,235,0.12)"),
+                buildStatCard(String.valueOf(totalCalories), "Calorías quemadas", "#fb923c", "rgba(234,88,12,0.12)")
         );
     }
 
-    private Div buildStatCard(String icon, String value, String label, String color, String bg) {
-        Div iconBox = new Div();
-        iconBox.setText(icon);
-        iconBox.getStyle()
-                .set("width", "52px").set("height", "52px").set("border-radius", "16px")
-                .set("background", bg).set("display", "flex").set("align-items", "center")
-                .set("justify-content", "center").set("font-size", "24px")
-                .set("margin", "0 auto 12px auto");
-
+    private Div buildStatCard(String value, String label, String color, String bg) {
         H3 number = new H3(value);
         number.getStyle().set("margin", "0").set("font-size", "2.2rem").set("font-weight", "900")
-                .set("color", "white").set("text-align", "center");
+                .set("color", color).set("text-align", "center");
 
         Paragraph text = new Paragraph(label);
         text.getStyle().set("margin", "4px 0 0 0").set("font-size", "0.9rem")
                 .set("color", "#64748b").set("text-align", "center");
 
-        Div card = new Div(iconBox, number, text);
+        Div card = new Div(number, text);
         card.getStyle()
                 .set("flex", "1").set("padding", "24px").set("border-radius", "18px")
-                .set("background", "#0f172a").set("border", "1px solid rgba(255,255,255,0.06)");
+                .set("background", "#0f172a").set("border", "1px solid rgba(255,255,255,0.06)")
+                .set("display", "flex").set("flex-direction", "column")
+                .set("align-items", "center").set("justify-content", "center");
         return card;
     }
 
@@ -164,7 +158,7 @@ public class TrainingSessionView extends VerticalLayout {
                 .set("background", "#0f172a").set("border", "1px solid rgba(255,255,255,0.06)")
                 .set("border-radius", "18px").set("margin-bottom", "24px");
 
-        H3 title = new H3("📊 Minutos de entrenamiento esta semana");
+        H3 title = new H3("Minutos de entrenamiento esta semana");
         title.getStyle().set("margin", "0").set("font-size", "1.2rem")
                 .set("font-weight", "700").set("color", "white");
 
@@ -219,7 +213,7 @@ public class TrainingSessionView extends VerticalLayout {
     }
 
     private VerticalLayout buildListCard() {
-        searchField.setPlaceholder("🔍 Buscar actividad...");
+        searchField.setPlaceholder("Buscar actividad...");
         searchField.setWidthFull();
         styleInput(searchField);
         searchField.addValueChangeListener(e -> renderSessionList());
@@ -278,12 +272,14 @@ public class TrainingSessionView extends VerticalLayout {
     }
 
     private HorizontalLayout buildSessionRow(TrainingSessionResponse session) {
-        Div iconBox = new Div();
-        iconBox.setText(typeIcon(session.getTrainingType()));
-        iconBox.getStyle()
+        Div typeTag = new Div();
+        typeTag.setText(typeLabel(session.getTrainingType()));
+        typeTag.getStyle()
                 .set("width", "50px").set("height", "50px").set("border-radius", "14px")
                 .set("background", "#1e293b").set("display", "flex").set("align-items", "center")
-                .set("justify-content", "center").set("font-size", "22px").set("flex-shrink", "0");
+                .set("justify-content", "center").set("font-size", "0.7rem").set("font-weight", "700")
+                .set("color", "#14e0a1").set("flex-shrink", "0").set("text-align", "center")
+                .set("padding", "4px");
 
         String displayTitle = safe(session.getTitle()).isBlank()
                 ? typeLabel(session.getTrainingType()) : session.getTitle();
@@ -330,7 +326,7 @@ public class TrainingSessionView extends VerticalLayout {
         actions.setAlignItems(Alignment.CENTER);
         actions.setSpacing(true);
 
-        HorizontalLayout row = new HorizontalLayout(iconBox, info, actions);
+        HorizontalLayout row = new HorizontalLayout(typeTag, info, actions);
         row.setWidthFull();
         row.setPadding(true);
         row.setAlignItems(Alignment.CENTER);
@@ -340,7 +336,6 @@ public class TrainingSessionView extends VerticalLayout {
     }
 
     private void openNewDialog() {
-        // Aviso si no hay wellness registrado hoy
         try {
             boolean todayHasWellness = wellnessService
                     .getRecords(username, password)
@@ -348,7 +343,7 @@ public class TrainingSessionView extends VerticalLayout {
                     .anyMatch(r -> LocalDate.now().equals(r.getRecordDate()));
             if (!todayHasWellness) {
                 Notification n = new Notification(
-                        "⚠️ No has registrado tu wellness hoy — el modelo ML será menos preciso",
+                        "No has registrado tu wellness hoy - el modelo ML sera menos preciso",
                         4000, Notification.Position.TOP_CENTER);
                 n.getElement().getStyle()
                         .set("background", "#1e3a5f")
@@ -369,7 +364,7 @@ public class TrainingSessionView extends VerticalLayout {
         titleEl.getStyle().set("margin", "0 0 16px 0").set("font-size", "1.8rem")
                 .set("font-weight", "800").set("color", "white");
 
-        TextField titleField   = field("Título");
+        TextField titleField   = field("Titulo");
         DatePicker dateField   = datePicker("Fecha");
         dateField.setValue(LocalDate.now());
 
@@ -388,7 +383,7 @@ public class TrainingSessionView extends VerticalLayout {
 
         NumberField distanceField = numField("Distancia (km)");
         IntegerField hrField      = intField("FC media (bpm)", 40, 220);
-        IntegerField maxHrField   = intField("FC máxima (bpm)", 40, 220);
+        IntegerField maxHrField   = intField("FC maxima (bpm)", 40, 220);
 
         TextArea notesField = textArea("Notas", "Sensaciones, objetivo, molestias...");
 
@@ -410,7 +405,7 @@ public class TrainingSessionView extends VerticalLayout {
         Button saveBtn = new Button("Guardar entrenamiento", e -> {
             try {
                 if (safe(titleField.getValue()).isBlank()) {
-                    Notification.show("El título es obligatorio", 3000, Notification.Position.MIDDLE); return;
+                    Notification.show("El titulo es obligatorio", 3000, Notification.Position.MIDDLE); return;
                 }
                 if (dateField.getValue() == null) {
                     Notification.show("La fecha es obligatoria", 3000, Notification.Position.MIDDLE); return;
@@ -421,7 +416,7 @@ public class TrainingSessionView extends VerticalLayout {
                 TrainingSessionRequest req = buildRequest(titleField, dateField, typeField,
                         durationField, rpeField, distanceField, caloriesField, hrField, maxHrField, notesField);
                 trainingSessionService.createSession(username, password, req);
-                Notification.show("Entrenamiento guardado ✓", 3000, Notification.Position.MIDDLE);
+                Notification.show("Entrenamiento guardado", 3000, Notification.Position.MIDDLE);
                 dialog.close();
                 refreshSessions();
             } catch (Exception ex) {
@@ -472,14 +467,14 @@ public class TrainingSessionView extends VerticalLayout {
         if (!showHr) { hrField.setValue(null); maxHrField.setValue(null); }
 
         String tipText = switch (type != null ? type : "") {
-            case "GYM"        -> "💪 Gimnasio: registra series, cargas y RPE en las notas.";
-            case "RUNNING"    -> "🏃 Carrera: incluye la distancia recorrida y el ritmo medio.";
-            case "CYCLING"    -> "🚴 Ciclismo: registra distancia, desnivel y vatios si los tienes.";
-            case "SWIMMING"   -> "🏊 Natación: registra distancia y estilos en las notas.";
-            case "FOOTBALL"   -> "⚽ Fútbol: la FC media es el mejor indicador de carga.";
-            case "BASKETBALL" -> "🏀 Baloncesto: valora el esfuerzo con el RPE.";
-            case "TENNIS"     -> "🎾 Tenis: anota el resultado si quieres en las notas.";
-            case "PADEL"      -> "🏓 Pádel: la duración del partido y RPE son suficientes.";
+            case "GYM"        -> "Gimnasio: registra series, cargas y RPE en las notas.";
+            case "RUNNING"    -> "Carrera: incluye la distancia recorrida y el ritmo medio.";
+            case "CYCLING"    -> "Ciclismo: registra distancia, desnivel y vatios si los tienes.";
+            case "SWIMMING"   -> "Natación: registra distancia y estilos en las notas.";
+            case "FOOTBALL"   -> "Futbol: la FC media es el mejor indicador de carga.";
+            case "BASKETBALL" -> "Baloncesto: valora el esfuerzo con el RPE.";
+            case "TENNIS"     -> "Tenis: anota el resultado si quieres en las notas.";
+            case "PADEL"      -> "Pádel: la duración del partido y RPE son suficientes.";
             default           -> "";
         };
         tip.setText(tipText);
@@ -497,7 +492,7 @@ public class TrainingSessionView extends VerticalLayout {
         titleEl.getStyle().set("margin", "0 0 16px 0").set("font-size", "1.6rem")
                 .set("font-weight", "800").set("color", "white");
 
-        TextField titleField   = field("Título");
+        TextField titleField   = field("Titulo");
         titleField.setValue(safe(session.getTitle()));
 
         DatePicker dateField = datePicker("Fecha");
@@ -508,13 +503,13 @@ public class TrainingSessionView extends VerticalLayout {
         typeField.setItemLabelGenerator(this::typeLabel);
         typeField.setValue(safe(session.getTrainingType()).isBlank() ? "RUNNING" : session.getTrainingType());
 
-        IntegerField durationField = intField("Duración (min)", 1, 600);
+        IntegerField durationField = intField("Duracion (min)", 1, 600);
         durationField.setValue(session.getDurationMinutes() != null ? session.getDurationMinutes() : 45);
 
         IntegerField rpeField = intField("RPE (1-10)", 1, 10);
         rpeField.setValue(session.getRpe() != null ? session.getRpe() : 6);
 
-        IntegerField caloriesField = intField("Calorías", 0, 9999);
+        IntegerField caloriesField = intField("Calorias", 0, 9999);
         if (session.getCalories() != null) caloriesField.setValue(session.getCalories());
 
         NumberField distanceField = numField("Distancia (km)");
@@ -523,7 +518,7 @@ public class TrainingSessionView extends VerticalLayout {
         IntegerField hrField = intField("FC media (bpm)", 40, 220);
         if (session.getAverageHeartRate() != null) hrField.setValue(session.getAverageHeartRate());
 
-        IntegerField maxHrField = intField("FC máxima (bpm)", 40, 220);
+        IntegerField maxHrField = intField("FC maxima (bpm)", 40, 220);
         if (session.getMaxHeartRate() != null) maxHrField.setValue(session.getMaxHeartRate());
 
         TextArea notesField = textArea("Notas", "Sensaciones, objetivo, molestias...");
@@ -554,7 +549,7 @@ public class TrainingSessionView extends VerticalLayout {
                 TrainingSessionRequest req = buildRequest(titleField, dateField, typeField,
                         durationField, rpeField, distanceField, caloriesField, hrField, maxHrField, notesField);
                 trainingSessionService.updateSession(username, password, session.getId(), req);
-                Notification.show("Entrenamiento actualizado ✓", 3000, Notification.Position.MIDDLE);
+                Notification.show("Entrenamiento actualizado", 3000, Notification.Position.MIDDLE);
                 dialog.close();
                 refreshSessions();
             } catch (Exception ex) {
@@ -589,16 +584,16 @@ public class TrainingSessionView extends VerticalLayout {
     }
 
     private Div buildMlCard(TrainingSessionResponse s) {
-        String acwrStr  = s.getAcwr()        != null ? String.format(Locale.US, "%.2f", s.getAcwr()) : "—";
-        String loadStr  = s.getSessionLoad() != null ? s.getSessionLoad().toString() : "—";
-        String acuteStr = s.getAcuteLoad7d() != null ? String.format(Locale.US,"%.0f",s.getAcuteLoad7d()) : "—";
+        String acwrStr  = s.getAcwr()        != null ? String.format(Locale.US, "%.2f", s.getAcwr()) : "-";
+        String loadStr  = s.getSessionLoad() != null ? s.getSessionLoad().toString() : "-";
+        String acuteStr = s.getAcuteLoad7d() != null ? String.format(Locale.US,"%.0f",s.getAcuteLoad7d()) : "-";
 
         Div card = new Div();
         card.getStyle()
                 .set("background", "rgba(20,224,161,0.06)").set("border", "1px solid rgba(20,224,161,0.15)")
                 .set("border-radius", "14px").set("padding", "14px 16px");
         card.getElement().setProperty("innerHTML",
-                "<div style='font-size:0.85rem;color:#14e0a1;font-weight:700;margin-bottom:10px'>⚡ Datos del modelo ML</div>" +
+                "<div style='font-size:0.85rem;color:#14e0a1;font-weight:700;margin-bottom:10px'>Datos del modelo ML</div>" +
                         "<div style='display:flex;gap:28px;flex-wrap:wrap;font-size:0.9rem;color:#94a3b8'>" +
                         "<span>Carga sesión: <b style='color:white'>" + loadStr + "</b></span>" +
                         "<span>Carga aguda 7d: <b style='color:white'>" + acuteStr + "</b></span>" +
@@ -715,19 +710,11 @@ public class TrainingSessionView extends VerticalLayout {
 
     private String typeLabel(String v) {
         return switch (safe(v)) {
-            case "RUNNING" -> "Carrera"; case "GYM" -> "Gimnasio";
-            case "FOOTBALL" -> "Fútbol"; case "CYCLING" -> "Ciclismo";
-            case "SWIMMING" -> "Natación"; case "TENNIS" -> "Tenis";
-            case "PADEL" -> "Pádel"; case "BASKETBALL" -> "Baloncesto";
+            case "RUNNING"    -> "Carrera";    case "GYM"        -> "Gimnasio";
+            case "FOOTBALL"   -> "Futbol";     case "CYCLING"    -> "Ciclismo";
+            case "SWIMMING"   -> "Natación";   case "TENNIS"     -> "Tenis";
+            case "PADEL"      -> "Pádel";      case "BASKETBALL" -> "Baloncesto";
             case "Todos los tipos" -> "Todos los tipos"; default -> "Otro";
-        };
-    }
-
-    private String typeIcon(String v) {
-        return switch (safe(v)) {
-            case "RUNNING" -> "🏃"; case "GYM" -> "💪"; case "FOOTBALL" -> "⚽";
-            case "CYCLING" -> "🚴"; case "SWIMMING" -> "🏊"; case "TENNIS" -> "🎾";
-            case "PADEL" -> "🏓"; case "BASKETBALL" -> "🏀"; default -> "🏋️";
         };
     }
 
@@ -761,7 +748,7 @@ public class TrainingSessionView extends VerticalLayout {
     }
 
     private String formatDate(LocalDate d) {
-        if (d == null) return "—";
+        if (d == null) return "-";
         return d.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 

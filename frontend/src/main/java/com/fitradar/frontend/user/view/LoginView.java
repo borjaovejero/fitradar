@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -30,7 +31,7 @@ public class LoginView extends HorizontalLayout {
         setSpacing(false);
         getStyle().set("background", "#020817");
 
-        VerticalLayout leftPanel = buildLeftPanel();
+        VerticalLayout leftPanel  = buildLeftPanel();
         VerticalLayout rightPanel = buildRightPanel();
 
         add(leftPanel, rightPanel);
@@ -58,59 +59,71 @@ public class LoginView extends HorizontalLayout {
         brandRow.setSpacing(true);
         brandRow.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        Div logoBox = new Div();
-        logoBox.setText("⚡");
-        logoBox.getStyle()
-                .set("width", "72px")
-                .set("height", "72px")
-                .set("border-radius", "20px")
-                .set("background", "#10b981")
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("font-size", "34px")
-                .set("font-weight", "700")
-                .set("color", "white");
+        Image logoImg = new Image("images/fitradar_logo.png", "FitRadar logo");
+        logoImg.getStyle()
+                .set("width", "72px").set("height", "72px")
+                .set("object-fit", "contain").set("border-radius", "20px")
+                .set("filter", "drop-shadow(0 0 12px rgba(16,185,129,0.45))");
 
         H1 brandTitle = new H1("FitRadar");
         brandTitle.getStyle()
-                .set("margin", "0")
-                .set("font-size", "3rem")
-                .set("font-weight", "800")
-                .set("color", "white");
+                .set("margin", "0").set("font-size", "3rem")
+                .set("font-weight", "800").set("color", "white");
 
-        brandRow.add(logoBox, brandTitle);
+        brandRow.add(logoImg, brandTitle);
 
-        Paragraph subtitle = new Paragraph("Tu plataforma de rendimiento deportivo.\nPredict. Prevent. Perform.");
-        subtitle.getStyle()
-                .set("white-space", "pre-line")
-                .set("font-size", "1.1rem")
-                .set("line-height", "1.6")
-                .set("color", "#e2e8f0")
-                .set("margin", "24px 0 12px 0");
+        Paragraph tagline = new Paragraph("Predict. Prevent. Perform.");
+        tagline.getStyle()
+                .set("margin", "24px 0 0 0").set("font-size", "1.3rem")
+                .set("font-weight", "700").set("color", "#14e0a1")
+                .set("letter-spacing", "0.04em");
 
-        HorizontalLayout statsRow1 = new HorizontalLayout();
-        statsRow1.setWidthFull();
-        statsRow1.setSpacing(true);
+        Div separator = new Div();
+        separator.getStyle()
+                .set("width", "60px").set("height", "3px")
+                .set("background", "linear-gradient(90deg,#14e0a1,#0ea5a4)")
+                .set("border-radius", "999px")
+                .set("margin", "10px 0 12px 0");
 
-        HorizontalLayout statsRow2 = new HorizontalLayout();
-        statsRow2.setWidthFull();
-        statsRow2.setSpacing(true);
-
-        statsRow1.add(
-                buildStatCard("12,480", "Atletas activos"),
-                buildStatCard("94,320", "Entrenamientos registrados")
+        HorizontalLayout row1 = new HorizontalLayout();
+        row1.setWidthFull();
+        row1.setSpacing(true);
+        row1.add(
+                buildFeatureCard("Wellness diario"),
+                buildFeatureCard("Actividades")
         );
 
-        statsRow2.add(
-                buildStatCard("3,210", "Lesiones prevenidas"),
-                buildStatCard("28,900", "Récords superados")
+        HorizontalLayout row2 = new HorizontalLayout();
+        row2.setWidthFull();
+        row2.setSpacing(true);
+        row2.add(
+                buildFeatureCard("Predicción ML"),
+                buildFeatureCard("Lesiones")
         );
 
-        content.add(brandRow, subtitle, statsRow1, statsRow2);
+        content.add(brandRow, tagline, separator, row1, row2);
         leftPanel.add(content);
-
         return leftPanel;
+    }
+
+    private VerticalLayout buildFeatureCard(String title) {
+        VerticalLayout card = new VerticalLayout();
+        card.setWidth("250px");
+        card.setPadding(true);
+        card.setSpacing(false);
+        card.setAlignItems(FlexComponent.Alignment.START);
+        card.getStyle()
+                .set("background", "rgba(255,255,255,0.08)")
+                .set("border-radius", "20px")
+                .set("border", "1px solid rgba(255,255,255,0.08)");
+
+        H2 titleText = new H2(title);
+        titleText.getStyle()
+                .set("margin", "0").set("font-size", "1.4rem")
+                .set("font-weight", "800").set("color", "#14e0a1");
+
+        card.add(titleText);
+        return card;
     }
 
     private VerticalLayout buildRightPanel() {
@@ -121,8 +134,7 @@ public class LoginView extends HorizontalLayout {
         rightPanel.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         rightPanel.setAlignItems(FlexComponent.Alignment.CENTER);
         rightPanel.getStyle()
-                .set("background", "#020817")
-                .set("color", "white");
+                .set("background", "#020817").set("color", "white");
 
         VerticalLayout formCard = new VerticalLayout();
         formCard.setWidth("560px");
@@ -133,36 +145,26 @@ public class LoginView extends HorizontalLayout {
 
         H2 title = new H2("Bienvenido de vuelta");
         title.getStyle()
-                .set("margin", "0")
-                .set("font-size", "2.5rem")
-                .set("font-weight", "800")
-                .set("color", "white");
+                .set("margin", "0").set("font-size", "2.5rem")
+                .set("font-weight", "800").set("color", "white");
 
         Paragraph subtitle = new Paragraph("Inicia sesión");
         subtitle.getStyle()
-                .set("margin", "0 0 8px 0")
-                .set("font-size", "1.1rem")
-                .set("color", "#94a3b8");
+                .set("margin", "0 0 8px 0").set("font-size", "1.1rem").set("color", "#94a3b8");
 
         TextField usernameField = new TextField("Nombre de usuario");
-        usernameField.setPlaceholder("Tu nombre de usuario");
         styleField(usernameField);
 
         PasswordField passwordField = new PasswordField("Contraseña");
-        passwordField.setPlaceholder("Tu contraseña");
         styleField(passwordField);
 
         Button loginButton = new Button("Iniciar sesión");
         loginButton.setWidthFull();
         loginButton.getStyle()
-                .set("height", "60px")
-                .set("border-radius", "18px")
-                .set("background", "#10b981")
-                .set("color", "white")
-                .set("font-size", "1.2rem")
-                .set("font-weight", "700")
-                .set("border", "none")
-                .set("cursor", "pointer")
+                .set("height", "60px").set("border-radius", "18px")
+                .set("background", "#10b981").set("color", "white")
+                .set("font-size", "1.2rem").set("font-weight", "700")
+                .set("border", "none").set("cursor", "pointer")
                 .set("margin-top", "14px");
 
         loginButton.addClickListener(event -> {
@@ -171,9 +173,8 @@ public class LoginView extends HorizontalLayout {
                     Notification.show("El nombre de usuario es obligatorio", 3000, Notification.Position.MIDDLE);
                     return;
                 }
-
                 if (passwordField.getValue() == null || passwordField.getValue().isBlank()) {
-                    Notification.show("La contraseña es obligatoria", 3000, Notification.Position.MIDDLE);
+                    Notification.show("La contrasena es obligatoria", 3000, Notification.Position.MIDDLE);
                     return;
                 }
 
@@ -191,7 +192,7 @@ public class LoginView extends HorizontalLayout {
                 UI.getCurrent().navigate("dashboard");
 
             } catch (Exception e) {
-                Notification.show("Credenciales incorrectas o error de conexión", 4000, Notification.Position.MIDDLE);
+                Notification.show("Credenciales incorrectas o error de conexion", 4000, Notification.Position.MIDDLE);
             }
         });
 
@@ -203,55 +204,20 @@ public class LoginView extends HorizontalLayout {
 
         Paragraph registerText = new Paragraph("¿No tienes cuenta?");
         registerText.getStyle()
-                .set("margin", "0")
-                .set("color", "#cbd5e1")
-                .set("font-size", "1rem");
+                .set("margin", "0").set("color", "#cbd5e1").set("font-size", "1rem");
 
         Button registerButton = new Button("Regístrate aquí");
         registerButton.getStyle()
-                .set("background", "transparent")
-                .set("color", "#10b981")
-                .set("font-size", "1rem")
-                .set("font-weight", "700")
-                .set("border", "none")
-                .set("cursor", "pointer");
-
+                .set("background", "transparent").set("color", "#10b981")
+                .set("font-size", "1rem").set("font-weight", "700")
+                .set("border", "none").set("cursor", "pointer");
         registerButton.addClickListener(event -> UI.getCurrent().navigate("register"));
 
         registerRow.add(registerText, registerButton);
 
         formCard.add(title, subtitle, usernameField, passwordField, loginButton, registerRow);
         rightPanel.add(formCard);
-
         return rightPanel;
-    }
-
-    private VerticalLayout buildStatCard(String value, String label) {
-        VerticalLayout card = new VerticalLayout();
-        card.setWidth("250px");
-        card.setPadding(true);
-        card.setSpacing(false);
-        card.setAlignItems(FlexComponent.Alignment.START);
-        card.getStyle()
-                .set("background", "rgba(255,255,255,0.08)")
-                .set("border-radius", "20px")
-                .set("border", "1px solid rgba(255,255,255,0.08)");
-
-        H2 valueText = new H2(value);
-        valueText.getStyle()
-                .set("margin", "0")
-                .set("font-size", "2rem")
-                .set("font-weight", "800")
-                .set("color", "#14e0a1");
-
-        Paragraph labelText = new Paragraph(label);
-        labelText.getStyle()
-                .set("margin", "8px 0 0 0")
-                .set("font-size", "1rem")
-                .set("color", "#cbd5e1");
-
-        card.add(valueText, labelText);
-        return card;
     }
 
     private void styleField(com.vaadin.flow.component.textfield.TextFieldBase<?, ?> field) {

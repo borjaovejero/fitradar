@@ -200,8 +200,8 @@ public class DashboardView extends VerticalLayout {
         int samples = safeInt(d.getSamplesCollected());
         boolean personalized = samples >= 15;
         row.add(wideCard("Estado del modelo ML",
-                personalized ? "Modelo personalizado activo ✅" : samples + " / 15 sesiones para personalizar",
-                safeInt(d.getActiveInjuries()) + " lesión" + (safeInt(d.getActiveInjuries()) == 1 ? "" : "es"),
+                personalized ? "Modelo personalizado activo" : samples + " / 15 sesiones para personalizar",
+                personalized ? "Activo" : "En progreso",
                 personalized ? "#60a5fa" : "#94a3b8", VaadinIcon.COG));
 
         return row;
